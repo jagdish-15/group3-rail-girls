@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :events
   get "pages/home"
   resource :session
   resources :passwords, param: :token
