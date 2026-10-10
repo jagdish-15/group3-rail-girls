@@ -38,7 +38,7 @@
             <dt class="small text-muted">Price</dt>
             <dd class="h4 mb-0"><%= @event.price.to_i.zero? ? "Free" : number_to_currency(@event.price, unit: "₹", precision: 0) %></dd>
           </dl>
-          <%= link_to "Book now", (authenticated? ? "#" : new_session_path), class: "btn btn-primary w-100" %>
+          <%= link_to "Book now", new_event_booking_path(@event), class: "btn btn-primary w-100" %>
         </div>
       </div>
     </div>

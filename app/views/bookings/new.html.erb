@@ -1,0 +1,62 @@
+<% content_for :title, "Book #{@event.title}" %>
+
+<%= link_to "← Back to event", event_path(@event), class: "text-decoration-none d-inline-block mb-3" %>
+
+<div class="mx-auto" style="max-width: 640px;">
+  <div class="card shadow-sm">
+    <div class="card-body p-4">
+      <h1 class="h4"><%= @event.title %></h1>
+      <p class="text-muted small">
+        <%= @event.starts_at&.strftime("%a, %d %b %Y, %l:%M %p") %> &middot; <%= @event.venue %>
+      </p>
+
+      <% @booking.errors.full_messages.each do |msg| %>
+        <div class="alert alert-danger py-2"><%= msg %></div>
+      <% end %>
+
+      <%= form_with url: event_bookings_path(@event) do %>
+        <h2 class="h6">Pick up to <%= Booking::MAX_SEATS %> seats</h2>
+        <div class="text-center text-muted small border-bottom pb-1 mb-3">SCREEN / STAGE</div>
+
+        <% Booking::ROWS.each do |row| %>
+          <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
+            <strong style="width: 1.5rem;"><%= row %></strong>
+            <% (1..Booking::SEATS_PER_ROW).each do |n| %>
+              <% seat = "#{row}#{n}" %>
+              <% taken = @taken.include?(seat) %>
+              <%= check_box_tag "seats[]", seat, false, id: "seat_#{seat}", class: "btn-check seat-input", disabled: taken, autocomplete: "off" %>
+              <label for="seat_<%= seat %>" class="btn btn-sm <%= taken ? "btn-secondary" : "btn-outline-primary" %>" style="width: 2.5rem;"><%= n %></label>
+            <% end %>
+          </div>
+        <% end %>
+
+        <div class="d-flex gap-3 justify-content-center small text-muted my-3">
+          <span><span class="badge border text-primary">1</span> Available</span>
+          <span><span class="badge text-bg-primary">1</span> Selected</span>
+          <span><span class="badge text-bg-secondary">1</span> Taken</span>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center">
+          <span>Total: <strong id="total">₹0</strong></span>
+          <%= submit_tag "Continue to payment", class: "btn btn-primary", id: "submit-seats", disabled: true %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var price = <%= @event.price.to_d.to_f %>;
+    var max = <%= Booking::MAX_SEATS %>;
+    var inputs = document.querySelectorAll(".seat-input");
+    function update() {
+      var count = document.querySelectorAll(".seat-input:checked").length;
+      document.getElementById("total").textContent = price === 0 ? "Free" : "₹" + (count * price);
+      document.getElementById("submit-seats").disabled = count === 0;
+      inputs.forEach(function (i) { if (!i.checked && !i.dataset.taken) i.disabled = count >= max || i.dataset.taken; });
+    }
+    inputs.forEach(function (i) { if (i.disabled) i.dataset.taken = "1"; i.addEventListener("change", update); });
+    update();
+  })();
+</script>

@@ -1,0 +1,34 @@
+<% content_for :title, "Your booking" %>
+
+<%= tag.div(notice, class: "alert alert-success") if notice %>
+
+<div class="mx-auto" style="max-width: 560px;">
+  <div class="card shadow-sm">
+    <div class="card-body p-4">
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <h1 class="h4 mb-0"><%= @booking.event.title %></h1>
+        <span class="badge <%= @booking.confirmed? ? "text-bg-success" : "text-bg-warning" %>"><%= @booking.status.to_s.capitalize %></span>
+      </div>
+
+      <dl class="row mb-3">
+        <dt class="col-4 text-muted small">When</dt>
+        <dd class="col-8"><%= @booking.event.starts_at&.strftime("%a, %d %b %Y, %l:%M %p") %></dd>
+        <dt class="col-4 text-muted small">Venue</dt>
+        <dd class="col-8"><%= @booking.event.venue %></dd>
+        <dt class="col-4 text-muted small">Seats</dt>
+        <dd class="col-8"><%= @booking.seat_list.join(", ") %></dd>
+        <dt class="col-4 text-muted small">Total</dt>
+        <dd class="col-8 fw-bold"><%= @booking.total_price.zero? ? "Free" : number_to_currency(@booking.total_price, unit: "₹", precision: 0) %></dd>
+        <% if @booking.booked_at %>
+          <dt class="col-4 text-muted small">Booked at</dt>
+          <dd class="col-8"><%= @booking.booked_at.strftime("%d %b %Y, %l:%M %p") %></dd>
+        <% end %>
+      </dl>
+
+      <% unless @booking.confirmed? %>
+        <%= button_to "Pay now", booking_path(@booking), method: :patch, class: "btn btn-primary w-100" %>
+      <% end %>
+      <%= link_to "Back to events", events_path, class: "btn btn-link w-100 mt-2" %>
+    </div>
+  </div>
+</div>
