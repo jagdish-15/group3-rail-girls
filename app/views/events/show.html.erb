@@ -19,6 +19,21 @@
         <h1 class="h2 mb-3"><%= @event.title %></h1>
         <h2 class="h5">About this event</h2>
         <p class="text-muted"><%= simple_format(@event.description) %></p>
+
+        <% if !@event.online? && @event.venue.present? %>
+          <% map_query = ERB::Util.url_encode(@event.venue) %>
+          <h2 class="h5 mt-4">Location</h2>
+          <div class="position-relative border rounded overflow-hidden" style="height: 260px;">
+            <iframe src="https://www.google.com/maps?q=<%= map_query %>&output=embed"
+                    title="Map of <%= @event.venue %>" width="100%" height="100%" style="border: 0;"
+                    loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <%# Transparent overlay so a click opens the full map in a new tab %>
+            <%= link_to "", "https://www.google.com/maps/search/?api=1&query=#{map_query}",
+                  target: "_blank", rel: "noopener", class: "position-absolute top-0 start-0 w-100 h-100",
+                  aria: { label: "Open #{@event.venue} in Google Maps" } %>
+          </div>
+          <div class="small text-muted mt-1">Click the map to open it in Google Maps.</div>
+        <% end %>
       </div>
 
       <div class="col-lg-4">

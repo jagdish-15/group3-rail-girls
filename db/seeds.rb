@@ -78,9 +78,24 @@ events_data = [
     description: "Start your day with a gentle 45-minute yoga session at home." }
 ]
 
+# Approximate coordinates for each venue (used for the "distance from you" label)
+VENUE_COORDINATES = {
+  "Koregaon Park, Pune" => [18.5362, 73.8940],
+  "Baner, Pune"         => [18.5590, 73.7868],
+  "Hinjewadi, Pune"     => [18.5912, 73.7389],
+  "Kharadi, Pune"       => [18.5515, 73.9348],
+  "FC Road, Pune"       => [18.5236, 73.8412],
+  "Viman Nagar, Pune"   => [18.5679, 73.9143],
+  "Aundh, Pune"         => [18.5580, 73.8075],
+  "Pashan Lake, Pune"   => [18.5372, 73.7916]
+}.freeze
+
 events = events_data.map do |data|
+  latitude, longitude = VENUE_COORDINATES[data[:venue]]
   Event.create!(
     data.except(:days, :hour).merge(
+      latitude: latitude,
+      longitude: longitude,
       starts_at: data[:days].days.from_now.change(hour: data[:hour], min: 0),
       image_url: "https://picsum.photos/seed/#{data[:title].parameterize}/600/400"
     )

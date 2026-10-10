@@ -4,6 +4,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h1 class="h3 mb-0">Events</h1>
+  <button type="button" id="locate-btn" class="btn btn-outline-primary btn-sm">📍 Show distance from me</button>
 </div>
 
 <div id="events" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
@@ -13,3 +14,38 @@
     </div>
   <% end %>
 </div>
+
+<div id="locate-msg" class="small text-muted mt-3"></div>
+
+<script>
+  (function () {
+    var btn = document.getElementById("locate-btn");
+    var msg = document.getElementById("locate-msg");
+
+    // Haversine formula: straight-line distance in km between two lat/lng points
+    function km(lat1, lng1, lat2, lng2) {
+      var rad = Math.PI / 180;
+      var dLat = (lat2 - lat1) * rad, dLng = (lng2 - lng1) * rad;
+      var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(lat1 * rad) * Math.cos(lat2 * rad) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+      return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    btn.addEventListener("click", function () {
+      if (!navigator.geolocation) { msg.textContent = "Your browser doesn't support location."; return; }
+      btn.disabled = true;
+      msg.textContent = "Finding your location…";
+      navigator.geolocation.getCurrentPosition(function (pos) {
+        document.querySelectorAll("[data-distance]").forEach(function (el) {
+          var d = km(pos.coords.latitude, pos.coords.longitude, parseFloat(el.dataset.lat), parseFloat(el.dataset.lng));
+          el.textContent = "📍 " + (d < 1 ? "Less than 1 km" : d.toFixed(1) + " km") + " away";
+        });
+        btn.classList.add("d-none");
+        msg.textContent = "Distances are straight-line, from your current location.";
+      }, function () {
+        btn.disabled = false;
+        msg.textContent = "We couldn't get your location. Allow location access in your browser and try again.";
+      }, { timeout: 10000 });
+    });
+  })();
+</script>

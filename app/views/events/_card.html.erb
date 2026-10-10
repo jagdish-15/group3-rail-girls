@@ -11,6 +11,9 @@
     <p class="card-text text-muted small mb-2">
       <%= event.starts_at&.strftime("%a, %d %b %Y, %l:%M %p") %><br>
       <%= event.venue %>
+      <% if event.latitude && event.longitude %>
+        <br><span class="text-primary" data-distance data-lat="<%= event.latitude %>" data-lng="<%= event.longitude %>"></span>
+      <% end %>
       <% if event.duration_text.present? %> &middot; <%= event.duration_text %><% end %>
     </p>
     <div class="mt-auto d-flex justify-content-between align-items-center">
