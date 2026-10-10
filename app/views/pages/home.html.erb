@@ -1,13 +1,17 @@
-<h1>Event App</h1>
+<div class="card shadow-sm text-center">
+  <div class="card-body p-4">
+    <h1 class="card-title mb-3">Event App</h1>
 
-<% if notice %>
-<p style="color: green"><%= notice %></p>
-<% end %>
+    <% if notice %>
+    <div class="alert alert-success"><%= notice %></div>
+    <% end %>
 
-<% if authenticated? %>
-<p>Hello, <%= Current.user.name %>!</p>
-<%= button_to "Log out", session_path, method: :delete %>
-<% else %>
-<%= link_to "Log in", new_session_path %> |
-<%= link_to "Sign up", new_registration_path %>
-<% end %>
+    <% if authenticated? %>
+    <p class="lead">Hello, <%= Current.user.name %>!</p>
+    <%= button_to "Log out", session_path, method: :delete, class: "btn btn-outline-danger" %>
+    <% else %>
+    <%= link_to "Log in", new_session_path, class: "btn btn-primary me-2" %>
+    <%= link_to "Sign up", new_registration_path, class: "btn btn-outline-primary" %>
+    <% end %>
+  </div>
+</div>
