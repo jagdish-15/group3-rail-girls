@@ -4,7 +4,8 @@ class EventsController < ApplicationController
 
   # GET /events or /events.json
   def index
-    @events = Event.all
+    @selected_category = params[:category].presence
+    @events = Event.by_category(@selected_category)
   end
 
   # GET /events/1 or /events/1.json

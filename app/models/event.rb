@@ -2,6 +2,8 @@ class Event < ApplicationRecord
   MODES = %w[offline online].freeze
   CATEGORIES = %w[Music Tech Comedy Sports].freeze
 
+  scope :by_category, ->(category) { where(category: category) if category.present? }
+
   has_many :bookings, dependent: :destroy
 
   validates :title, presence: true

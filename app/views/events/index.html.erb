@@ -2,15 +2,33 @@
 
 <%= tag.div(notice, class: "alert alert-success") if notice %>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
   <h1 class="h3 mb-0">Events</h1>
-  <button type="button" id="locate-btn" class="btn btn-outline-primary btn-sm">📍 Show distance from me</button>
+
+  <div class="d-flex align-items-end gap-3">
+    <%= form_with url: events_path, method: :get, class: "d-flex align-items-end gap-2" do |form| %>
+      <div>
+        <%= form.label :category, "Filter by category", class: "form-label mb-1" %>
+        <%= form.select :category,
+          options_for_select([["All categories", ""]] + Event::CATEGORIES.map { |category| [category, category] }, @selected_category),
+          {},
+          { class: "form-select", onchange: "this.form.requestSubmit()" } %>
+      </div>
+    <% end %>
+    <button type="button" id="locate-btn" class="btn btn-outline-primary">📍 Show distance from me</button>
+  </div>
 </div>
 
 <div id="events" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-  <% @events.each do |event| %>
-    <div class="col">
-      <%= render "events/card", event: event %>
+  <% if @events.any? %>
+    <% @events.each do |event| %>
+      <div class="col">
+        <%= render "events/card", event: event %>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="col-12">
+      <p class="text-muted" role="status">No events found in this category.</p>
     </div>
   <% end %>
 </div>
