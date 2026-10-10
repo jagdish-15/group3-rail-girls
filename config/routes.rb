@@ -6,7 +6,12 @@ Rails.application.routes.draw do
   resources :events, only: [:index, :show] do
     resources :bookings, only: [:new, :create]
   end
-  resources :bookings, only: [:show, :update]
+  resources :bookings, only: [:index, :show, :update] do
+    member do
+      patch :cancel
+      get :refund
+    end
+  end
 
   root "events#index"
 end

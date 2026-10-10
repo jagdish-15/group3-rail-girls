@@ -1,13 +1,14 @@
 <% content_for :title, "Your booking" %>
 
 <%= tag.div(notice, class: "alert alert-success") if notice %>
+<%= tag.div(alert, class: "alert alert-danger") if alert %>
 
 <div class="mx-auto" style="max-width: 560px;">
   <div class="card shadow-sm">
     <div class="card-body p-4">
       <div class="d-flex justify-content-between align-items-start mb-3">
         <h1 class="h4 mb-0"><%= @booking.event.title %></h1>
-        <span class="badge <%= @booking.confirmed? ? "text-bg-success" : "text-bg-warning" %>"><%= @booking.status.to_s.capitalize %></span>
+        <span class="badge <%= @booking.confirmed? ? "text-bg-success" : (@booking.cancelled? ? "text-bg-secondary" : "text-bg-warning") %>"><%= @booking.status.to_s.capitalize %></span>
       </div>
 
       <dl class="row mb-3">
@@ -25,10 +26,17 @@
         <% end %>
       </dl>
 
-      <% unless @booking.confirmed? %>
+      <% if @booking.pending? %>
+        <p class="text-center mb-2"><%= render "bookings/countdown", booking: @booking %></p>
         <%= button_to "Pay now", booking_path(@booking), method: :patch, class: "btn btn-primary w-100" %>
       <% end %>
-      <%= link_to "Back to events", events_path, class: "btn btn-link w-100 mt-2" %>
+      <% if @booking.active? %>
+        <%= button_to "Cancel booking", cancel_booking_path(@booking), method: :patch, class: "btn btn-outline-danger w-100 mt-2",
+              form: { data: { turbo_confirm: "Cancel this booking?" } } %>
+      <% end %>
+      <%= link_to "My bookings", bookings_path, class: "btn btn-link w-100 mt-2" %>
     </div>
   </div>
 </div>
+
+<%= render "bookings/countdown_script" %>

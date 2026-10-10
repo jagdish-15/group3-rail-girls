@@ -3,6 +3,7 @@
     <%= link_to "Eventapp", root_path, class: "navbar-brand fw-bold" %>
     <div class="navbar-nav ms-auto flex-row gap-3 align-items-center">
       <% if authenticated? %>
+        <%= link_to "My bookings", bookings_path, class: "nav-link" %>
         <span class="text-muted small"><%= Current.user&.name %></span>
         <%= button_to "Log out", session_path, method: :delete, class: "btn btn-sm btn-outline-secondary" %>
       <% else %>

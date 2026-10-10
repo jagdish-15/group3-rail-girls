@@ -1,0 +1,17 @@
+<script>
+  (function () {
+    if (window.bookingCountdown) clearInterval(window.bookingCountdown);
+    function tick() {
+      var els = document.querySelectorAll("[data-countdown]");
+      els.forEach(function (el) {
+        var left = Math.floor((new Date(el.dataset.countdown) - new Date()) / 1000);
+        if (left <= 0) { clearInterval(window.bookingCountdown); window.location.reload(); return; }
+        var m = String(Math.floor(left / 60)).padStart(2, "0");
+        var s = String(left % 60).padStart(2, "0");
+        el.querySelector("strong").textContent = m + ":" + s;
+      });
+    }
+    tick();
+    window.bookingCountdown = setInterval(tick, 1000);
+  })();
+</script>

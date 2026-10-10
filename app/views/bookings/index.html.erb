@@ -1,0 +1,42 @@
+<% content_for :title, "My bookings" %>
+
+<%= tag.div(notice, class: "alert alert-success") if notice %>
+<%= tag.div(alert, class: "alert alert-danger") if alert %>
+
+<h1 class="h3 mb-4">My bookings</h1>
+
+<% if @bookings.empty? %>
+  <div class="text-center text-muted py-5">
+    <p>You haven't booked anything yet.</p>
+    <%= link_to "Browse events", events_path, class: "btn btn-primary" %>
+  </div>
+<% else %>
+  <div class="list-group shadow-sm">
+    <% @bookings.each do |booking| %>
+      <div class="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-3 p-3">
+        <div>
+          <div class="fw-bold"><%= link_to booking.event.title, booking, class: "text-decoration-none" %></div>
+          <div class="small text-muted">
+            <%= booking.event.starts_at&.strftime("%a, %d %b %Y, %l:%M %p") %> &middot; <%= booking.event.venue %>
+          </div>
+          <div class="small">Seats: <%= booking.seat_list.join(", ") %> &middot;
+            <%= booking.total_price.zero? ? "Free" : number_to_currency(booking.total_price, unit: "₹", precision: 0) %>
+          </div>
+          <%= render "bookings/countdown", booking: booking %>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge <%= booking.confirmed? ? "text-bg-success" : (booking.cancelled? ? "text-bg-secondary" : "text-bg-warning") %>"><%= booking.status.to_s.capitalize %></span>
+          <%= link_to "View", booking, class: "btn btn-sm btn-outline-primary" %>
+          <% if booking.active? %>
+            <%= button_to "Cancel", cancel_booking_path(booking), method: :patch, class: "btn btn-sm btn-outline-danger",
+                  form: { data: { turbo_confirm: "Cancel this booking?" } } %>
+          <% else %>
+            <%= link_to "Refund", refund_booking_path(booking), class: "btn btn-sm btn-outline-secondary" %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<%= render "bookings/countdown_script" %>

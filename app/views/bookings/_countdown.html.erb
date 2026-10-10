@@ -1,0 +1,4 @@
+<%# Live "time left to pay" for a pending booking; reloads the page when it hits zero %>
+<% if booking.expires_at %>
+  <span class="small text-danger" data-countdown="<%= booking.expires_at.iso8601 %>">Hold expires in <strong>--:--</strong></span>
+<% end %>
