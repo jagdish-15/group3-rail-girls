@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  description: MyText
+  category: MyString
+  venue: MyString
+  starts_at: 2026-10-10 10:03:47
+  duration: 1
+  mode: MyString
+  image_url: MyString
+  price: 9.99
+
+two:
+  title: MyString
+  description: MyText
+  category: MyString
+  venue: MyString
+  starts_at: 2026-10-10 10:03:47
+  duration: 1
+  mode: MyString
+  image_url: MyString
+  price: 9.99
