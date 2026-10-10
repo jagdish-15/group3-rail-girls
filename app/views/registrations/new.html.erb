@@ -1,0 +1,23 @@
+<h1>Sign up</h1>
+
+<% @user.errors.full_messages.each do |msg| %>
+<p style="color: red"><%= msg %></p>
+<% end %>
+
+<%= form_with model: @user, url: registration_path do |f| %>
+<div>
+<%= f.label :name %>
+<%= f.text_field :name %>
+</div>
+<div>
+<%= f.label :email_address, "Email" %>
+<%= f.email_field :email_address %>
+</div>
+<div>
+<%= f.label :password %>
+<%= f.password_field :password %>
+</div>
+<%= f.submit "Sign up" %>
+<% end %>
+
+<p>Already have an account? <%= link_to "Log in", new_session_path %></p>
