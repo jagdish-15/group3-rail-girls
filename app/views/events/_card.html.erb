@@ -1,0 +1,21 @@
+<div class="card h-100 shadow-sm" id="<%= dom_id event, :card %>">
+  <% if event.image_url.present? %>
+    <%= image_tag event.image_url, alt: event.title, class: "card-img-top", style: "height: 180px; object-fit: cover;", loading: "lazy" %>
+  <% end %>
+  <div class="card-body d-flex flex-column">
+    <div class="mb-2">
+      <span class="badge text-bg-primary"><%= event.category %></span>
+      <span class="badge <%= event.online? ? "text-bg-info" : "text-bg-secondary" %>"><%= event.mode.to_s.capitalize %></span>
+    </div>
+    <h5 class="card-title"><%= event.title %></h5>
+    <p class="card-text text-muted small mb-2">
+      <%= event.starts_at&.strftime("%a, %d %b %Y, %l:%M %p") %><br>
+      <%= event.venue %>
+      <% if event.duration_text.present? %> &middot; <%= event.duration_text %><% end %>
+    </p>
+    <div class="mt-auto d-flex justify-content-between align-items-center">
+      <strong><%= event.price.to_i.zero? ? "Free" : number_to_currency(event.price, unit: "₹", precision: 0) %></strong>
+      <%= link_to "View details", event, class: "btn btn-sm btn-primary stretched-link" %>
+    </div>
+  </div>
+</div>

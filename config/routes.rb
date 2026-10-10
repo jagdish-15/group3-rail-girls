@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
   resource :registration, only: [:new, :create]
 
-  resources :events do
+  resources :events, only: [:index, :show] do
     resources :bookings, only: [:new, :create]
   end
   resources :bookings, only: [:show, :update]

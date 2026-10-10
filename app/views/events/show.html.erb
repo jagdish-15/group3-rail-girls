@@ -1,10 +1,46 @@
-<p style="color: green"><%= notice %></p>
+<% content_for :title, @event.title %>
 
-<%= render @event %>
+<%= tag.div(notice, class: "alert alert-success") if notice %>
 
-<div>
-  <%= link_to "Edit this event", edit_event_path(@event) %> |
-  <%= link_to "Back to events", events_path %>
+<%= link_to "← Back to events", events_path, class: "text-decoration-none d-inline-block mb-3" %>
 
-  <%= button_to "Destroy this event", @event, method: :delete %>
+<div class="card shadow-sm overflow-hidden">
+  <% if @event.image_url.present? %>
+    <%= image_tag @event.image_url, alt: @event.title, class: "w-100", style: "height: 360px; object-fit: cover;" %>
+  <% end %>
+
+  <div class="card-body p-4">
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="mb-2">
+          <span class="badge text-bg-primary"><%= @event.category %></span>
+          <span class="badge <%= @event.online? ? "text-bg-info" : "text-bg-secondary" %>"><%= @event.mode.to_s.capitalize %></span>
+        </div>
+        <h1 class="h2 mb-3"><%= @event.title %></h1>
+        <h2 class="h5">About this event</h2>
+        <p class="text-muted"><%= simple_format(@event.description) %></p>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="border rounded p-3 bg-light">
+          <dl class="mb-3">
+            <dt class="small text-muted">Date &amp; time</dt>
+            <dd><%= @event.starts_at&.strftime("%A, %d %B %Y") %><br><%= @event.starts_at&.strftime("%l:%M %p") %></dd>
+
+            <dt class="small text-muted">Venue</dt>
+            <dd><%= @event.venue %></dd>
+
+            <% if @event.duration_text.present? %>
+              <dt class="small text-muted">Duration</dt>
+              <dd><%= @event.duration_text %></dd>
+            <% end %>
+
+            <dt class="small text-muted">Price</dt>
+            <dd class="h4 mb-0"><%= @event.price.to_i.zero? ? "Free" : number_to_currency(@event.price, unit: "₹", precision: 0) %></dd>
+          </dl>
+          <%= link_to "Book now", (authenticated? ? "#" : new_session_path), class: "btn btn-primary w-100" %>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
